@@ -1,0 +1,6 @@
+![(ThinkPad T480s Width_ 1920) (1)](https://github.com/user-attachments/assets/0a05d5b8-1c82-4210-82f2-679f067719a5)
+![places(ThinkPad T480s Width_ 1920)](https://github.com/user-attachments/assets/9fa01140-51d9-46fe-80b0-fdafa4259074)
+![localhost_3000_places(ThinkPad T480s)](https://github.com/user-attachments/assets/9bd2c590-3f4b-4206-96bf-15fab47c1160)
+![localhost_3000_search_city=15 date=2024-06-01 person=1(ThinkPad T480s) (1)](https://github.com/user-attachments/assets/d8a49188-10d7-4c4b-a1a7-6aa88979bfc8)
+![localhost_3000_admin(T480s)](https://github.com/user-attachments/assets/d658db64-85e9-445c-b11b-10f9aae10b32)
+![localhost_3000_admin(T480s) (14)](https://github.com/user-attachments/assets/ea6be47c-c852-42e8-939f-ca2fa2b4c306)
