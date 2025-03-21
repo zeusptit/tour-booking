@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: hotel
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hotel
+    username: dbuser
+    password: dbpass
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:
+    password:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+vnpay:
+  tmnCode: YOUR_TMN_CODE
+  hashSecret: YOUR_HASH_SECRET
+  apiUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  queryUrl: https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
+  returnUrl: http://localhost:8009/payment/vnpay-return
+
+server:
+  port: 8084
