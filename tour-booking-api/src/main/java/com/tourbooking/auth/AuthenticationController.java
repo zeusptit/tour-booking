@@ -3,9 +3,11 @@ package com.tourbooking.auth;
 import com.tourbooking.config.JwtService;
 import com.tourbooking.exception.InputException;
 import com.tourbooking.model.ResponseObject;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,8 +34,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<ResponseObject> register(
-            @RequestBody AuthenticationRequest request
+    public ResponseEntity<ResponseObject> authenticate(
+            @RequestBody @Valid AuthenticationRequest request
     ) {
         Token token = authenticationService.authenticate(request);
         if (token != null) {
