@@ -14,6 +14,7 @@ import com.tourbooking.model.ResponseObject;
 import com.tourbooking.service.DayInPackagesService;
 import com.tourbooking.service.PackagesService;
 import com.tourbooking.service.SchedulesService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/admin/packages")
-
+@RequiredArgsConstructor
 public class PackagesController {
-    @Autowired
-    private PackagesService packagesService;
-    @Autowired
-    private DayInPackagesService dayInPackagesService;
-    @Autowired
-    private SchedulesService schedulesService;
+    private final PackagesService packagesService;
+    private final DayInPackagesService dayInPackagesService;
+    private final SchedulesService schedulesService;
 
     @GetMapping("/{id}")
     ResponseEntity<ResponseObject> getPackageById(@PathVariable Long id) {
@@ -53,11 +51,7 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Lấy danh sách booking gói tour thành công", basicDtoList)
             );
-        } catch (NotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", ex.getMessage(), null)
-            );
-        } catch (NoContentException ex) {
+        } catch (NotFoundException | NoContentException ex) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", ex.getMessage(), null)
             );
@@ -77,17 +71,9 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Thêm gói tour thành công", packagesSummaryDto)
             );
-        } catch (ScheduleException e) {
+        } catch (ScheduleException | NotFoundException | InputException e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (InputException e) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (NotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", ex.getMessage(), null)
             );
         }
     }
@@ -104,17 +90,9 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Sửa gói tour thành công", packagesSummaryDto)
             );
-        } catch (ScheduleException e) {
+        } catch (ScheduleException | InputException | NotFoundException e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (InputException e) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (NotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", ex.getMessage(), null)
             );
         }
     }
@@ -140,11 +118,7 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Thêm ngày thành công", dayInPackagesDetailsDto)
             );
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (ScheduleException e) {
+        } catch (NotFoundException | ScheduleException e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", e.getMessage(), null)
             );
@@ -196,11 +170,7 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Thêm lịch trình thành công", schedulesDetailsDto)
             );
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", e.getMessage(), null)
-            );
-        } catch (InputException e) {
+        } catch (NotFoundException | InputException e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", e.getMessage(), null)
             );

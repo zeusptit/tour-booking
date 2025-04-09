@@ -41,7 +41,7 @@ public class PackagesServiceImpl implements PackagesService {
     private ConvertToDtoService toDtoService;
 
     @Override
-    public PackagesSummaryDto addPackages(PackagesDetailsDto packagesDetailsDto) throws ScheduleException{
+    public PackagesSummaryDto addPackages(PackagesDetailsDto packagesDetailsDto) throws ScheduleException {
         TourGuides tourGuides = tourGuidesRepository
                 .findById(packagesDetailsDto.getTourGuidesDto().getId()).orElse(null);
         if (tourGuides == null) throw new NotFoundException("Không tồn tại hướng dẫn viên");
@@ -86,7 +86,7 @@ public class PackagesServiceImpl implements PackagesService {
             if (start.isAfter(end)) throw new InputException("Ngày bắt đầu phải trước ngày kết thúc");
             for (Packages p : packagesList) {
                 if (!p.getId().equals(id)
-                        &&(!(p.getEndDate().isBefore(start) || p.getStartDate().isAfter(end))))
+                        && (!(p.getEndDate().isBefore(start) || p.getStartDate().isAfter(end))))
                     throw new ScheduleException("Trùng lịch hướng dẫn viên");
             }
             if (packagesDetailsDto.getCost() <= 0) throw new InputException("Giá tour phải lớn hơn 0");
@@ -155,7 +155,7 @@ public class PackagesServiceImpl implements PackagesService {
     public Page<PackagesBasicDto> searchPackages(String keyword, int page) {
         Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "id"));
         Page<Packages> packagesPage = packagesRepository.findByNameContainingAndDeletedFalse(keyword, pageable);
-        if (packagesPage.isEmpty())  throw new NoContentException("Không tìm thấy gói tour nào");
+        if (packagesPage.isEmpty()) throw new NoContentException("Không tìm thấy gói tour nào");
         return toDtoService.toPackagesBasicDtoPage(packagesPage);
     }
 
@@ -175,8 +175,8 @@ public class PackagesServiceImpl implements PackagesService {
         if (tourGuides == null) throw new NotFoundException("Không tồn tại hướng dẫn viên");
         Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "id"));
         Page<Packages> packagesPage = packagesRepository.
-                findByNameContainingAndDeletedFalseAndTourGuides(keyword,tourGuides, pageable);
-        if (packagesPage.isEmpty())  throw new NoContentException("Không tìm thấy gói tour nào");
+                findByNameContainingAndDeletedFalseAndTourGuides(keyword, tourGuides, pageable);
+        if (packagesPage.isEmpty()) throw new NoContentException("Không tìm thấy gói tour nào");
         return toDtoService.toPackagesBasicDtoPage(packagesPage);
     }
 

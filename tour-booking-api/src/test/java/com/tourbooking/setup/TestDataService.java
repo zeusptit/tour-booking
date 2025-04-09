@@ -1,5 +1,6 @@
 package com.tourbooking.setup;
 
+import com.tourbooking.config.JwtService;
 import com.tourbooking.dto.Customer.CustomerDetailsDto;
 import com.tourbooking.model.Customers;
 import com.tourbooking.model.MembershipClass;
@@ -28,6 +29,7 @@ public class TestDataService {
     private final CustomerService customerService;
     private final AdminRepository adminRepository;
     private final TourGuidesRepository tourGuidesRepository;
+    private final JwtService jwtService;
 
     private User user;
     private Customers customers;
@@ -64,5 +66,41 @@ public class TestDataService {
                 .build();
         userRepository.save(user);
         return customerService.addCustomers(customerDetailsDto, user);
+    }
+
+    public String generateAdminToken() {
+        User userAdmin = User.builder()
+                .email("userAdmin@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.ADMIN)
+                .build();
+
+        userRepository.save(userAdmin);
+        return jwtService.generateToken(userAdmin);
+    }
+
+    public String generateCustomerToken() {
+        User userCustomer = User.builder()
+                .email("userCustomer@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.CUSTOMER)
+                .build();
+
+        userRepository.save(userCustomer);
+        return jwtService.generateToken(userCustomer);
+    }
+
+    public String generateTourGuideToken() {
+        User userTourGuide = User.builder()
+                .email("userTourGuide@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.TOURGUIDE)
+                .build();
+
+        userRepository.save(userTourGuide);
+        return jwtService.generateToken(userTourGuide);
     }
 }
