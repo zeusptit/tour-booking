@@ -59,7 +59,7 @@ export default function Login() {
           ho: data.lastName,
           email: data.signupEmail,
           password: data.signupPassword,
-          role: "TOURGUIDE",
+          role: "CUSTOMER",
         }
       );
 
@@ -93,13 +93,10 @@ export default function Login() {
         localStorage.setItem("accessToken", result.data.token);
         if (result.data.role === "ADMIN") {
           navigate("/admin");
-          console.log(1)
         } else if (result.data.role === "CUSTOMER") {
           navigate("/customer");
-          console.log(2)
         } else if (result.data.role === "TOURGUIDE") {
           navigate("/tourguide");
-          console.log(3)
         }
       }
     } catch (error) {
