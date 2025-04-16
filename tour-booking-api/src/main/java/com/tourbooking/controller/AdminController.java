@@ -456,13 +456,9 @@ public class AdminController {
     ResponseEntity<ResponseObject> confirmBooking(@PathVariable Long id) {
         try {
             boolean confirmed = bookingsService.confirmBooking(id);
-        } catch (BookingException e) {
+        } catch (BookingException | MessagingException e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", e.getMessage(), false)
-            );
-        } catch (MessagingException ex) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", ex.getMessage(), false)
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(

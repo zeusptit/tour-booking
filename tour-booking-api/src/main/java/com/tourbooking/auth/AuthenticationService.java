@@ -50,34 +50,38 @@ public class AuthenticationService {
                 .createdAt(LocalDateTime.now())
                 .role(request.getRole())
                 .build();
-        if (request.getRole().name().equals("ADMIN")) {
-            AdminDetailsDto adminDetailsDto = AdminDetailsDto.builder()
-                    .ho(request.getHo())
-                    .ten(request.getTen())
-                    .title(request.getTitle())
-                    .build();
-            userRepository.save(user);
-            User user1 = userService.findUserByEmail(request.getEmail());
-            adminService.addAdmin(adminDetailsDto, user1);
-        } else if (request.getRole().name().equals("CUSTOMER")) {
-            CustomerDetailsDto customerDetailsDto = CustomerDetailsDto.builder()
-                    .ho(request.getHo())
-                    .ten(request.getTen())
-                    .membership(MembershipClass.STANDARD)
-                    .build();
-            userRepository.save(user);
-            User user1 = userService.findUserByEmail(request.getEmail());
-            customerService.addCustomers(customerDetailsDto, user1);
-        } else if (request.getRole().name().equals("TOURGUIDE")) {
-            if (request.getSalary() <= 0) throw new InputException("Lương phải >0");
-            TourGuidesDetailsDto tourGuidesDetailsDto = TourGuidesDetailsDto.builder()
-                    .ho(request.getHo())
-                    .ten(request.getTen())
-                    .salary(request.getSalary())
-                    .build();
-            userRepository.save(user);
-            User user1 = userService.findUserByEmail(request.getEmail());
-            tourGuidesService.addTourGuides(tourGuidesDetailsDto, user1);
+        switch (request.getRole().name()) {
+            case "ADMIN" -> {
+                AdminDetailsDto adminDetailsDto = AdminDetailsDto.builder()
+                        .ho(request.getHo())
+                        .ten(request.getTen())
+                        .title(request.getTitle())
+                        .build();
+                userRepository.save(user);
+                User user1 = userService.findUserByEmail(request.getEmail());
+                adminService.addAdmin(adminDetailsDto, user1);
+            }
+            case "CUSTOMER" -> {
+                CustomerDetailsDto customerDetailsDto = CustomerDetailsDto.builder()
+                        .ho(request.getHo())
+                        .ten(request.getTen())
+                        .membership(MembershipClass.STANDARD)
+                        .build();
+                userRepository.save(user);
+                User user1 = userService.findUserByEmail(request.getEmail());
+                customerService.addCustomers(customerDetailsDto, user1);
+            }
+            case "TOURGUIDE" -> {
+                if (request.getSalary() <= 0) throw new InputException("Lương phải >0");
+                TourGuidesDetailsDto tourGuidesDetailsDto = TourGuidesDetailsDto.builder()
+                        .ho(request.getHo())
+                        .ten(request.getTen())
+                        .salary(request.getSalary())
+                        .build();
+                userRepository.save(user);
+                User user1 = userService.findUserByEmail(request.getEmail());
+                tourGuidesService.addTourGuides(tourGuidesDetailsDto, user1);
+            }
         }
         return jwtService.generateToken(user);
     }
