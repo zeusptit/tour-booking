@@ -424,7 +424,7 @@ public class ConvertToDtoServiceImpl implements ConvertToDtoService {
                 }
             }
         }
-        PackagesSummaryDto packagesSummaryDto = PackagesSummaryDto.builder()
+        return PackagesSummaryDto.builder()
                 .id(packages.getId())
                 .image1(image1)
                 .name(packages.getName())
@@ -436,7 +436,6 @@ public class ConvertToDtoServiceImpl implements ConvertToDtoService {
                 .startDate(packages.getStartDate().toString())
                 .endDate(packages.getEndDate().toString())
                 .build();
-        return packagesSummaryDto;
     }
 
     @Override

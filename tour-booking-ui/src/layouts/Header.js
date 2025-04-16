@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Greeting from "./Greeting";
+import { useNavigate } from "react-router-dom";
+
 function Header(props) {
+  const navigate = useNavigate();
   const { showSidebar, setShowSidebar } = props;
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  const [isOpen, setIsOpen] = useState(false); // State để theo dõi trạng thái hiển thị của dropdown
+  const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [isTourguide, setIsTourguide] = useState(false);
@@ -57,6 +60,10 @@ function Header(props) {
   const logout = () => {
     // localStorage.removeItem("accessToken");
   };
+
+  const toHome = () => {
+    navigate("/");
+  }
 
   return (
     <header
