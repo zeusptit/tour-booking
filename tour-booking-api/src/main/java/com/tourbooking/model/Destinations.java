@@ -23,7 +23,12 @@ public class Destinations {
     private String address;
     private Double rate;
     private Long price;
+
+    @ElementCollection
+    @CollectionTable(name = "destination_images", joinColumns = @JoinColumn(name = "destination_id"))
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private List<String> image;
+
     private String slug;
     private boolean deleted = false;
     @Enumerated(EnumType.STRING)
