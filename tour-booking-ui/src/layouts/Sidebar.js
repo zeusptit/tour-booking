@@ -16,7 +16,7 @@ function Sidebar(props) {
       <div className="navbar-vertical-container">
         <div className="navbar-vertical-footer-offset">
           <div className="navbar-brand-wrapper justify-content-between">
-            <div className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               <img
                 className="navbar-brand-logo"
                 src={process.env.PUBLIC_URL + "/logo_rec.png"}
@@ -31,7 +31,7 @@ function Sidebar(props) {
                 }}
                 alt="Logo"
               />
-            </div>
+            </Link>
             <button
               type="button"
               className="btn button-close-sidebar"
