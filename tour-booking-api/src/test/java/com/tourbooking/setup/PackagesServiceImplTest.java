@@ -434,27 +434,47 @@ public class PackagesServiceImplTest {
         verify(packagesRepository).countUpcomingPackages();
         verify(packagesRepository).countFinishedPackages();
     }
+
     @Test
     void testSearchTourguidePackages_Success() {
         Long tourguideId = 1L;
         String keyword = "tour";
         int page = 0;
+
         TourGuides tourGuides = new TourGuides();
         tourGuides.setId(tourguideId);
 
-        Packages package1 = new Packages(); package1.setId(100L);
-        Page<Packages> pageResult = new PageImpl<>(List.of(package1));
+        Packages package1 = new Packages();
+        package1.setId(100L);
 
+        PackagesBasicDto dto = new PackagesBasicDto();
+        dto.setId(100L);
+
+        Page<Packages> packagesPage = new PageImpl<>(List.of(package1));
+        Page<PackagesBasicDto> dtoPage = new PageImpl<>(List.of(dto));
+
+        // Mock repository
         when(tourGuidesRepository.findById(tourguideId)).thenReturn(Optional.of(tourGuides));
         when(packagesRepository.findByNameContainingAndDeletedFalseAndTourGuides(eq(keyword), eq(tourGuides), any(Pageable.class)))
-                .thenReturn(pageResult);
+                .thenReturn(packagesPage);
 
+        // ❗ Mock phần này để không trả về null
+        when(toDtoService.toPackagesBasicDtoPage(packagesPage)).thenReturn(dtoPage);
+
+        // Gọi hàm cần test
         Page<PackagesBasicDto> result = packagesService.searchTourguidePackages(tourguideId, keyword, page);
 
+        // Kiểm tra kết quả
         assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(100L, result.getContent().get(0).getId());
+
+        // Verify
         verify(tourGuidesRepository).findById(tourguideId);
         verify(packagesRepository).findByNameContainingAndDeletedFalseAndTourGuides(eq(keyword), eq(tourGuides), any(Pageable.class));
+        verify(toDtoService).toPackagesBasicDtoPage(packagesPage);
     }
+
 
     @Test
     void testSearchTourguidePackages_NotFoundTourguide() {
@@ -475,22 +495,42 @@ public class PackagesServiceImplTest {
         assertThrows(NoContentException.class, () ->
                 packagesService.searchTourguidePackages(tourguideId, "tour", 0));
     }
-    @Test
-    void testGetBookingList_Success() {
-        Long packageId = 1L;
-        Bookings bookingPaid = new Bookings(); bookingPaid.setPaymentStatus(PaymentStatus.PAID);
-//        Bookings bookingUnpaid = new Bookings(); bookingUnpaid.setPaymentStatus(PaymentStatus.UNPAID);
 
-        Packages packages = new Packages();
-//        packages.setBookingsList(List.of(bookingPaid, bookingUnpaid));
-        when(packagesRepository.findByIdAndDeletedFalse(packageId)).thenReturn(Optional.of(packages));
 
-        List<BookingsBasicDto> result = packagesService.getBookingList(packageId);
+@Test
+void testGetBookingList_Success() {
+    // Giả lập dữ liệu
+    Long packageId = 1L;
+    Bookings paidBooking = new Bookings();
+    paidBooking.setId(100L);
+    paidBooking.setPaymentStatus(PaymentStatus.PAID);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(packagesRepository).findByIdAndDeletedFalse(packageId);
-    }
+    Bookings unpaidBooking = new Bookings();
+    unpaidBooking.setId(101L);
+    unpaidBooking.setPaymentStatus(PaymentStatus.UNPAID);
+
+    Packages packages = new Packages();
+    packages.setId(packageId);
+    packages.setBookingsList(Arrays.asList(paidBooking, unpaidBooking));
+
+    BookingsBasicDto bookingsDto = new BookingsBasicDto();
+    bookingsDto.setId(100L);
+
+    // Mock repository và dịch vụ DTO
+    when(packagesRepository.findByIdAndDeletedFalse(packageId)).thenReturn(Optional.of(packages));
+    when(toDtoService.toBookingsBasicDtoList(anyList())).thenReturn(List.of(bookingsDto));
+
+    // Gọi method và kiểm tra kết quả
+    List<BookingsBasicDto> result = packagesService.getBookingList(packageId);
+
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals(100L, result.get(0).getId());
+
+    // Kiểm tra mock được gọi đúng
+    verify(packagesRepository).findByIdAndDeletedFalse(packageId);
+    verify(toDtoService).toBookingsBasicDtoList(anyList());
+}
 
     @Test
     void testGetBookingList_NotFoundPackage() {
