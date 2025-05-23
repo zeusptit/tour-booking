@@ -53,11 +53,7 @@ public class PackagesController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Lấy danh sách booking gói tour thành công", basicDtoList)
             );
-        } catch (NotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("error", ex.getMessage(), null)
-            );
-        } catch (NoContentException ex) {
+        } catch (NotFoundException | NoContentException ex) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("error", ex.getMessage(), null)
             );

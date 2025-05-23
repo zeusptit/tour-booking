@@ -1,14 +1,12 @@
 package com.tourbooking.setup;
 
+import com.tourbooking.config.JwtService;
 import com.tourbooking.dto.Customer.CustomerDetailsDto;
 import com.tourbooking.model.Customers;
 import com.tourbooking.model.MembershipClass;
 import com.tourbooking.model.Role;
 import com.tourbooking.model.User;
-import com.tourbooking.repository.AdminRepository;
-import com.tourbooking.repository.CustomersRepository;
-import com.tourbooking.repository.TourGuidesRepository;
-import com.tourbooking.repository.UserRepository;
+import com.tourbooking.repository.*;
 import com.tourbooking.service.CustomerService;
 import com.tourbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,18 +26,24 @@ public class TestDataService {
     private final CustomerService customerService;
     private final AdminRepository adminRepository;
     private final TourGuidesRepository tourGuidesRepository;
+    private final JwtService jwtService;
+    private final PackagesRepository packagesRepository;
+    private final BookingsRepository bookingsRepository;
 
     private User user;
     private Customers customers;
 
     public void setUp() {
+        clearDbBeforeTest();
         user = setUpUser();
-        customers = setUpCustomers(user);
+        customers = setUpCustomers();
     }
 
     public void clearDbBeforeTest() {
         adminRepository.deleteAll();
+        bookingsRepository.deleteAll();
         customersRepository.deleteAll();
+        packagesRepository.deleteAll();
         tourGuidesRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -56,7 +60,7 @@ public class TestDataService {
         return userService.findUserByEmail("user@gmail.com");
     }
 
-    public Customers setUpCustomers(User user) {
+    public Customers setUpCustomers() {
         CustomerDetailsDto customerDetailsDto = CustomerDetailsDto.builder()
                 .ho("Surname")
                 .ten("Name")
@@ -64,5 +68,41 @@ public class TestDataService {
                 .build();
         userRepository.save(user);
         return customerService.addCustomers(customerDetailsDto, user);
+    }
+
+    public String generateAdminToken() {
+        User userAdmin = User.builder()
+                .email("userAdmin@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.ADMIN)
+                .build();
+
+        userRepository.save(userAdmin);
+        return jwtService.generateToken(userAdmin);
+    }
+
+    public String generateCustomerToken() {
+        User userCustomer = User.builder()
+                .email("userCustomer@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.CUSTOMER)
+                .build();
+
+        userRepository.save(userCustomer);
+        return jwtService.generateToken(userCustomer);
+    }
+
+    public String generateTourGuideToken() {
+        User userTourGuide = User.builder()
+                .email("userTourGuide@gmail.com")
+                .password(passwordEncoder.encode("Password@123"))
+                .createdAt(LocalDateTime.now())
+                .role(Role.TOURGUIDE)
+                .build();
+
+        userRepository.save(userTourGuide);
+        return jwtService.generateToken(userTourGuide);
     }
 }
